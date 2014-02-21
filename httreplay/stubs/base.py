@@ -1,5 +1,5 @@
-from httplib import HTTPConnection, HTTPSConnection, HTTPMessage
-from cStringIO import StringIO
+from six.moves.http_client import HTTPConnection, HTTPSConnection, HTTPMessage
+from six import StringIO
 import logging
 import quopri
 import zlib

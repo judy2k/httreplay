@@ -1,6 +1,6 @@
-import httplib
+from six.moves import http_client as httplib
 from .replay_settings import ReplaySettings
-from stubs.base import ReplayHTTPConnection, ReplayHTTPSConnection
+from .stubs.base import ReplayHTTPConnection, ReplayHTTPSConnection
 
 
 #------------------------------------------------------------------------------
@@ -39,12 +39,15 @@ except ImportError:
 #------------------------------------------------------------------------------
 
 def _patch_httplib(settings):
-    httplib.HTTPSConnection = httplib.HTTPS._connection_class = \
-        ReplayHTTPSConnection
-    httplib.HTTPSConnection._replay_settings = settings
-    httplib.HTTPConnection = httplib.HTTP._connection_class = \
-        ReplayHTTPConnection
     httplib.HTTPConnection._replay_settings = settings
+    httplib.HTTPSConnection._replay_settings = settings
+
+    httplib.HTTPConnection = ReplayHTTPConnection
+    httplib.HTTPSConnection = ReplayHTTPSConnection
+
+    if six.PY2:
+        httplib.HTTP._connection_class = ReplayHTTPConnection
+        httplib.HTTPS._connection_class = ReplayHTTPSConnection
 
 
 def _patch_requests(settings):
@@ -125,10 +128,12 @@ def start_replay(replay_file_name, **kwargs):
 #------------------------------------------------------------------------------
 
 def _unpatch_httplib():
-    httplib.HTTPSConnection = httplib.HTTPS._connection_class = \
-        _original_https_connection
-    httplib.HTTPConnection = httplib.HTTP._connection_class = \
-        _original_http_connection
+    httplib.HTTPConnection = _original_http_connection
+    httplib.HTTPSConnection = _original_https_connection
+
+    if six.PY2:
+        httplib.HTTP._connection_class =  _original_http_connection
+        httplib.HTTPS._connection_class = _original_https_connection
 
 
 def _unpatch_requests():

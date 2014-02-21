@@ -29,6 +29,7 @@ Here's a very simple example of how to use it:
 There's a lot more you can do. Full documentation is available from the `httreplay github page <https://github.com/davepeck/httreplay>`_.
 """,
     packages=["httreplay", "httreplay.stubs"],
+    install_requires=["six == 1.5.2"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

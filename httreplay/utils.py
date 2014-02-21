@@ -1,5 +1,5 @@
 import urllib
-import urlparse
+from six.moves.urllib import parse as urlparse
 
 
 def sort_string(s):

@@ -1,3 +1,4 @@
+import six
 from six.moves import http_client as httplib
 from .replay_settings import ReplaySettings
 from .stubs.base import ReplayHTTPConnection, ReplayHTTPSConnection

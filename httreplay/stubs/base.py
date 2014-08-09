@@ -1,5 +1,5 @@
 from six.moves.http_client import HTTPConnection, HTTPSConnection, HTTPMessage
-from six import StringIO
+from six import StringIO, BytesIO
 import logging
 import quopri
 import zlib
@@ -210,17 +210,17 @@ class ReplayHTTPResponse(object):
         self.status = replay_response['status']['code']
         self.version = None
         if 'body_quoted_printable' in replay_response:
-            self._content = quopri.decodestring(replay_response['body_quoted_printable'])
+            self._content = quopri.decodestring(replay_response['body_quoted_printable']).decode("utf-8")
         else:
             self._content = replay_response['body'].decode('base64')
-        self.fp = StringIO(self._content)
+        self.fp = BytesIO(self._content.encode('utf-8'))
 
         msg_fp = StringIO('\r\n'.join('{}: {}'.format(h, v)
-            for h, v in replay_response['headers'].iteritems()))
+            for h, v in replay_response['headers'].items()))
         self.msg = HTTPMessage(msg_fp)
         self.msg.fp = None  # httplib does this, okay?
 
-        length = self.msg.getheader('content-length')
+        length = self.msg.get('content-length')
         self.length = int(length) if length else None
 
         # Save method to handle HEAD specially as httplib does

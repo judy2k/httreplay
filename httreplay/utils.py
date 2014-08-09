@@ -1,4 +1,5 @@
 import urllib
+import six
 from six.moves.urllib import parse as urlparse
 
 
@@ -22,7 +23,7 @@ def filter_query_params(url, remove_params):
     if not url:
         return url
 
-    remove_params = dict((p, None) if isinstance(p, basestring) else p
+    remove_params = dict((p, None) if isinstance(p, six.text_type) else p
         for p in remove_params)
 
     parsed_url = urlparse.urlparse(url)
@@ -63,7 +64,7 @@ def filter_headers(headers, remove_headers):
     :type remove_headers: list
     """
     # Upgrade bare 'header' to ('header', None) in remove_headers
-    remove_headers = [(h, None) if isinstance(h, basestring) else h
+    remove_headers = [(h, None) if isinstance(h, six.text_type) else h
         for h in remove_headers]
 
     # Make remove_headers a dict with lower-cased keys
